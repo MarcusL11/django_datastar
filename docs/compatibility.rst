@@ -13,19 +13,18 @@ The initial compatibility target is:
      - Django 5.2
      - Django 6.0
    * - 3.12
-     - local pass; CI pending
-     - local pass; CI pending
+     - tested
+     - tested
    * - 3.13
-     - local pass; CI pending
-     - local pass; CI pending
+     - tested
+     - tested
    * - 3.14
-     - local pass; CI pending
-     - local pass; CI pending
+     - tested
+     - tested
 
-All six combinations passed locally. They become supported claims only after
-the corresponding jobs pass on the committed revision. The runtime dependency
-is ``Django>=5.2,<6.1``. Node 20 and 22 are CI targets for browser-module tests
-only; consuming Django projects do not need Node.
+All six combinations pass locally and in CI against the built wheel. The
+runtime dependency is ``Django>=5.2,<6.1``. Node 20 and 22 test the JavaScript
+extracted from the wheel in CI; consuming Django projects do not need Node.
 
 Datastar and global fetch
 -------------------------
