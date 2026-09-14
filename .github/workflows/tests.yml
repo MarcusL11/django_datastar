@@ -1,0 +1,108 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python ${{ matrix.python }} / Django ${{ matrix.django }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13", "3.14"]
+        django: ["5.2", "6.0"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install build
+      - run: python -m build --wheel
+      - name: Test the wheel outside the checkout
+        run: |
+          python -m venv /tmp/django-datastar-wheel
+          /tmp/django-datastar-wheel/bin/pip install dist/*.whl pytest pytest-django "Django~=${{ matrix.django }}.0"
+          mkdir /tmp/django-datastar-tests
+          cp -R tests /tmp/django-datastar-tests/tests
+          cat > /tmp/django-datastar-tests/pytest.ini <<'EOF'
+          [pytest]
+          DJANGO_SETTINGS_MODULE = tests.settings
+          EOF
+          cd /tmp/django-datastar-tests
+          /tmp/django-datastar-wheel/bin/python -m pytest tests/test_middleware.py tests/test_csrf.py
+
+  node:
+    name: Node ${{ matrix.node }} browser-module tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["20", "22"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: python -m pip install build
+      - run: python -m build --wheel
+      - name: Test the JavaScript shipped in the wheel
+        run: |
+          unzip -q dist/*.whl -d /tmp/django-datastar-wheel
+          DATASTAR_CSRF_MODULE="/tmp/django-datastar-wheel/django_datastar/static/django_datastar/datastar-csrf.js" node tests/test_datastar_csrf.mjs
+
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install -e ".[tests]" ruff
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install build twine
+      - run: python -m build
+      - run: twine check dist/*
+      - name: Enforce the public sdist contents
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import tarfile
+
+          allowed = {".gitignore", "docs", "src", "tests", "LICENSE", "PKG-INFO", "README.md", "pyproject.toml"}
+          archive = next(Path("dist").glob("*.tar.gz"))
+          with tarfile.open(archive) as distribution:
+              members = distribution.getnames()
+          unexpected = []
+          for member in members:
+              relative = Path(member).parts[1:]
+              if relative and relative[0] not in allowed:
+                  unexpected.append(member)
+          if unexpected:
+              raise SystemExit(f"Unexpected sdist files: {unexpected}")
+          PY
+      - name: Smoke-test the installed wheel
+        run: |
+          python -m venv /tmp/django-datastar-wheel
+          /tmp/django-datastar-wheel/bin/pip install dist/*.whl
+          cd /tmp
+          /tmp/django-datastar-wheel/bin/python "$GITHUB_WORKSPACE/tests/installed_package_check.py"
