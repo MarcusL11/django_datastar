@@ -17,12 +17,14 @@ as a companion when those APIs are needed.
 
 ## Installation
 
-The distribution has not yet been published. From a source checkout, install it
-with:
+Install the package from PyPI:
 
 ```console
-python -m pip install .
+python -m pip install django-datastar
 ```
+
+To install a development checkout instead, run `python -m pip install .` from
+the repository root.
 
 Add the middleware before Django's CSRF middleware:
 
@@ -50,6 +52,20 @@ def update(request: DatastarHttpRequest) -> HttpResponse:
 
 `DatastarHttpRequest` is an annotation for requests processed by the middleware;
 Django still creates the actual request object.
+
+When middleware-backed request details are not needed, classify a request directly:
+
+```python
+from django.http import HttpRequest
+from django.http import HttpResponse
+from django_datastar import is_datastar
+
+
+def update(request: HttpRequest) -> HttpResponse:
+    if is_datastar(request):
+        return HttpResponse("Datastar request")
+    return HttpResponse("ordinary request")
+```
 
 ## Automatic CSRF headers
 

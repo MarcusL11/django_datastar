@@ -1,8 +1,14 @@
 Installation
 ============
 
-The distribution is not published yet. Install a local checkout or built wheel
-during development.
+Install the package from PyPI:
+
+.. code-block:: console
+
+   python -m pip install django-datastar
+
+To install a development checkout instead, run ``python -m pip install .`` from
+the repository root.
 
 Request metadata
 ----------------
@@ -37,6 +43,26 @@ For a typed view annotation:
 ``DatastarHttpRequest`` describes the middleware-added attribute for type
 checkers. Django continues to construct its normal request object; do not use
 the annotation class as a runtime ``isinstance`` test.
+
+Direct request classification
+-----------------------------
+
+Use ``is_datastar`` when middleware-backed request details are not needed:
+
+.. code-block:: python
+
+   from django.http import HttpRequest
+   from django.http import HttpResponse
+   from django_datastar import is_datastar
+
+   def update(request: HttpRequest) -> HttpResponse:
+       if is_datastar(request):
+           return HttpResponse("Datastar request")
+       return HttpResponse("ordinary request")
+
+The helper and ``request.datastar`` use the same exact, case-sensitive header
+check. The header remains client-controlled metadata and must not authorize a
+request or bypass CSRF protection.
 
 Optional CSRF bridge
 --------------------
