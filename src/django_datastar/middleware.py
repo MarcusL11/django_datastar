@@ -14,7 +14,7 @@ _AsyncGetResponse = Callable[[HttpRequest], Awaitable[HttpResponseBase]]
 _GetResponse = _SyncGetResponse | _AsyncGetResponse
 
 
-def is_datastar_request(request: HttpRequest) -> bool:
+def is_datastar(request: HttpRequest) -> bool:
     """Return whether a request has Datastar's canonical marker header.
 
     The marker is client-controlled and must not authorize a request or bypass
@@ -31,7 +31,7 @@ class DatastarDetails:
         self.request = request
 
     def __bool__(self) -> bool:
-        return is_datastar_request(self.request)
+        return is_datastar(self.request)
 
 
 class DatastarHttpRequest(HttpRequest):

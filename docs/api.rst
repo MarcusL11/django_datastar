@@ -1,7 +1,7 @@
 API reference
 =============
 
-.. autofunction:: django_datastar.is_datastar_request
+.. autofunction:: django_datastar.is_datastar
 
 .. autoclass:: django_datastar.DatastarDetails
    :members:

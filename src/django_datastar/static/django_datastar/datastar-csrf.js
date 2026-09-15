@@ -1,3 +1,4 @@
+const BRIDGE_INSTALLATION = Symbol.for("django-datastar.csrf-bridge");
 const CSRF_HEADER = "X-CSRFToken";
 const CSRF_META_SELECTOR = 'meta[name="datastar-csrf-token"]';
 const DATASTAR_REQUEST_HEADER = "Datastar-Request";
@@ -7,38 +8,77 @@ const REQUEST_URL_GETTER = Object.getOwnPropertyDescriptor(
   "url",
 ).get;
 
-function isRequest(input) {
-  try {
-    REQUEST_URL_GETTER.call(input);
-    return true;
-  } catch {
-    return false;
+function installDatastarCsrfBridge() {
+  if (window[BRIDGE_INSTALLATION]) {
+    return;
   }
+
+  const nativeFetch = window.fetch.bind(window);
+  window.fetch = createDatastarCsrfFetch(nativeFetch);
+  Object.defineProperty(window, BRIDGE_INSTALLATION, { value: true });
 }
 
-function hasAccessorRequestInitMember(init) {
-  if (init === undefined || init === null) {
-    return false;
-  }
+function createDatastarCsrfFetch(nativeFetch) {
+  return (...args) => {
+    const [input, init] = args;
+    let csrfInit;
 
-  if (typeof init !== "object" && typeof init !== "function") {
-    return true;
-  }
-
-  let owner = init;
-  while (owner !== null && owner !== Object.prototype) {
-    const descriptors = Object.values(Object.getOwnPropertyDescriptors(owner));
-    if (
-      descriptors.some(
-        (descriptor) =>
-          descriptor.get !== undefined || descriptor.set !== undefined,
-      )
-    ) {
-      return true;
+    try {
+      csrfInit = csrfRequestInitFor(input, init);
+    } catch {
+      return nativeFetch(...args);
     }
-    owner = Object.getPrototypeOf(owner);
+
+    if (!csrfInit) {
+      return nativeFetch(...args);
+    }
+
+    return nativeFetch(input, csrfInit);
+  };
+}
+
+function csrfRequestInitFor(input, init) {
+  if (hasAccessorRequestInitMember(init)) {
+    return null;
   }
-  return false;
+
+  const request = effectiveRequest(input, init);
+  if (!requiresCsrfHeader(request)) {
+    return null;
+  }
+
+  const token = csrfTokenFromDom();
+  return token ? withCsrfHeader(init, request.headers, token) : null;
+}
+
+function effectiveRequest(input, init) {
+  return {
+    input,
+    init,
+    headers: effectiveHeaders(input, init),
+    method: effectiveMethod(input, init),
+    url: effectiveUrl(input),
+  };
+}
+
+function requiresCsrfHeader(request) {
+  return (
+    request.headers.get(DATASTAR_REQUEST_HEADER) === "true" &&
+    !request.headers.has(CSRF_HEADER) &&
+    !SAFE_METHODS.has(request.method) &&
+    request.url.origin === window.location.origin &&
+    hasCompatibleMode(request.input, request.init)
+  );
+}
+
+function withCsrfHeader(init, headers, token) {
+  headers.set(CSRF_HEADER, token);
+  const csrfInit = Object.create(init ?? null);
+  Object.defineProperties(csrfInit, {
+    headers: { enumerable: true, value: headers },
+    mode: { enumerable: true, value: "same-origin" },
+  });
+  return csrfInit;
 }
 
 function effectiveHeaders(input, init) {
@@ -73,62 +113,42 @@ function hasCompatibleMode(input, init) {
   return !isRequest(input) || input.mode === "same-origin";
 }
 
-function csrfToken() {
+function csrfTokenFromDom() {
   return document.querySelector(CSRF_META_SELECTOR)?.getAttribute("content") || "";
 }
 
-function csrfRequestInit(init, headers, token) {
-  headers.set(CSRF_HEADER, token);
-  const csrfInit = Object.create(init ?? null);
-  Object.defineProperties(csrfInit, {
-    headers: { enumerable: true, value: headers },
-    mode: { enumerable: true, value: "same-origin" },
-  });
-  return csrfInit;
-}
-
-function csrfDetails(input, init) {
-  if (hasAccessorRequestInitMember(init)) {
-    return null;
+function hasAccessorRequestInitMember(init) {
+  if (init === undefined || init === null) {
+    return false;
   }
 
-  const headers = effectiveHeaders(input, init);
-  const method = effectiveMethod(input, init);
-  const url = effectiveUrl(input);
-
-  if (
-    headers.get(DATASTAR_REQUEST_HEADER) !== "true" ||
-    headers.has(CSRF_HEADER) ||
-    SAFE_METHODS.has(method) ||
-    url.origin !== window.location.origin ||
-    !hasCompatibleMode(input, init)
-  ) {
-    return null;
+  if (typeof init !== "object" && typeof init !== "function") {
+    return true;
   }
 
-  const token = csrfToken();
-  return token ? { headers, token } : null;
-}
-
-function installDatastarCsrf() {
-  const originalFetch = window.fetch.bind(window);
-
-  window.fetch = (...args) => {
-    const [input, init] = args;
-    let details;
-    let csrfInit;
-
-    try {
-      details = csrfDetails(input, init);
-      if (details) {
-        csrfInit = csrfRequestInit(init, details.headers, details.token);
-      }
-    } catch {
-      return originalFetch(...args);
+  let owner = init;
+  while (owner !== null && owner !== Object.prototype) {
+    const descriptors = Object.values(Object.getOwnPropertyDescriptors(owner));
+    if (
+      descriptors.some(
+        (descriptor) =>
+          descriptor.get !== undefined || descriptor.set !== undefined,
+      )
+    ) {
+      return true;
     }
-
-    return details ? originalFetch(input, csrfInit) : originalFetch(...args);
-  };
+    owner = Object.getPrototypeOf(owner);
+  }
+  return false;
 }
 
-installDatastarCsrf();
+function isRequest(input) {
+  try {
+    REQUEST_URL_GETTER.call(input);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+installDatastarCsrfBridge();

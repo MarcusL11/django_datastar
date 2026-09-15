@@ -52,6 +52,20 @@ function datastarHeaders(headers = {}) {
   return { "Datastar-Request": "true", ...headers };
 }
 
+test("installs the fetch bridge only once", async () => {
+  const installedFetch = window.fetch;
+  const duplicateModule = new URL(bridgeModule);
+  duplicateModule.searchParams.set("installation", "duplicate");
+
+  await import(duplicateModule.href);
+
+  assert.equal(window.fetch, installedFetch);
+  await capturedRequest("/update", {
+    headers: datastarHeaders(),
+    method: "POST",
+  });
+});
+
 test("injects the current token into same-origin unsafe Datastar requests", async () => {
   const input = "/update";
   const init = {
@@ -239,6 +253,26 @@ test("does not inject when the caller requests an incompatible mode", async () =
     assert.equal(captured[1], init);
     calls.length = 0;
   }
+});
+
+test("does not read Request mode when an earlier eligibility check fails", async () => {
+  let modeReads = 0;
+  const input = new Request("https://example.test/safe", {
+    headers: datastarHeaders(),
+    method: "GET",
+  });
+  Object.defineProperty(input, "mode", {
+    get() {
+      modeReads += 1;
+      throw new Error("mode should not be read");
+    },
+  });
+
+  const captured = await capturedRequest(input);
+
+  assert.equal(captured[0], input);
+  assert.equal(captured[1], undefined);
+  assert.equal(modeReads, 0);
 });
 
 test("preserves a same-origin Request and resolves its method and headers", async () => {

@@ -16,7 +16,7 @@ from django.test import RequestFactory
 from django_datastar import DatastarDetails
 from django_datastar import DatastarHttpRequest
 from django_datastar import DatastarMiddleware
-from django_datastar import is_datastar_request
+from django_datastar import is_datastar
 
 
 @pytest.mark.parametrize(
@@ -29,7 +29,7 @@ from django_datastar import is_datastar_request
         (" true ", False),
     ],
 )
-def test_is_datastar_request_requires_canonical_header_value(
+def test_is_datastar_requires_canonical_header_value(
     header_value: str | None,
     *,
     expected: bool,
@@ -37,7 +37,7 @@ def test_is_datastar_request_requires_canonical_header_value(
     headers = {} if header_value is None else {"Datastar-Request": header_value}
     request = RequestFactory().get("/", headers=headers)
 
-    assert is_datastar_request(request) is expected
+    assert is_datastar(request) is expected
 
 
 def test_datastar_details_delegates_detection_to_public_helper() -> None:
@@ -45,7 +45,7 @@ def test_datastar_details_delegates_detection_to_public_helper() -> None:
     details = DatastarDetails(request)
 
     with patch(
-        "django_datastar.middleware.is_datastar_request",
+        "django_datastar.middleware.is_datastar",
         autospec=True,
         return_value=True,
     ) as predicate:
