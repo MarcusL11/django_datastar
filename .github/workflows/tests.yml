@@ -95,6 +95,7 @@ jobs:
 
           allowed = {
               ".gitignore",
+              "HISTORY.rst",
               "docs",
               "example",
               "src",

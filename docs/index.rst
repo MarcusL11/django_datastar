@@ -1,16 +1,11 @@
-django-datastar
-===============
+django-datastar Documentation
+=============================
 
 ``django-datastar`` provides request metadata and an opt-in automatic CSRF
 bridge for Django applications using Datastar.
 
-It deliberately does not duplicate Datastar response or SSE APIs. The
-``datastar-py`` project can be used alongside it when those APIs are needed.
-
-.. warning::
-
-   ``Datastar-Request: true`` is client-controlled metadata. It is never an
-   authentication, authorization, permission, or CSRF boundary.
+This does not duplicate Datastar response or SSE APIs. The
+``datastar-py`` project should be used alongside this.
 
 .. toctree::
    :maxdepth: 2
@@ -22,3 +17,5 @@ It deliberately does not duplicate Datastar response or SSE APIs. The
    security
    compatibility
    api
+   changelog
+   troubleshooting

@@ -23,6 +23,18 @@ class PageTests(SimpleTestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertTrue(response["Content-Type"].startswith("text/html"))
 
+    def test_shared_layout_uses_brand_assets(self) -> None:
+        response = self.client.get(reverse("home"))
+
+        self.assertContains(
+            response,
+            'href="/static/example/django-datastar-icon.svg"',
+        )
+        self.assertContains(
+            response,
+            'src="/static/example/django-datastar-logo.svg"',
+        )
+
     def test_metadata_page_uses_datastar_get_actions(self) -> None:
         response = self.client.get(reverse("request_metadata"))
         content = response.content.decode()
