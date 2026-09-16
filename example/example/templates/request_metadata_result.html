@@ -1,0 +1,13 @@
+<section id="request-metadata-result" class="result" aria-live="polite">
+  <h2>Request details</h2>
+  <dl>
+    <dt>Method</dt>
+    <dd>{{ method }}</dd>
+    <dt>Raw Datastar-Request marker</dt>
+    <dd>{% if raw_marker is None %}(missing){% else %}<code>{{ raw_marker }}</code>{% endif %}</dd>
+    <dt>bool(request.datastar)</dt>
+    <dd>{{ is_datastar }}</dd>
+    <dt>View type</dt>
+    <dd>{{ view_type }}</dd>
+  </dl>
+</section>

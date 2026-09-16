@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Request metadata | django-datastar example{% endblock %}
+
+{% block main %}
+  <h1>Request metadata</h1>
+  <p>
+    Each action sends Datastar's canonical <code>Datastar-Request: true</code>
+    header. Inspect it in your browser's Network panel.
+  </p>
+  <div class="actions">
+    <button
+      type="button"
+      data-on:click="@get('{% url 'request_metadata_sync' %}')"
+    >
+      Call sync view
+    </button>
+    <button
+      type="button"
+      data-on:click="@get('{% url 'request_metadata_async' %}')"
+    >
+      Call async view
+    </button>
+  </div>
+  <section id="request-metadata-result" class="result" aria-live="polite">
+    <p>Choose an endpoint.</p>
+  </section>
+{% endblock %}

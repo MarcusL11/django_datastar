@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}CSRF | django-datastar example{% endblock %}
+
+{% block main %}
+  <h1>CSRF-protected POST</h1>
+  <p>
+    This form has no handwritten token header and no <code>csrf_exempt</code>.
+    The packaged bridge reads the masked DOM token emitted by
+    <code>{% verbatim %}{% datastar_csrf %}{% endverbatim %}</code> and supplies it to Django.
+    Inspect <code>Datastar-Request: true</code> and <code>X-CSRFToken</code> in
+    the Network panel.
+  </p>
+  <form
+    data-on:submit__prevent="@post('{% url 'csrf_submit' %}', {contentType: 'form'})"
+  >
+    <label for="message">Message</label>
+    <input id="message" name="message" value="Protected by Django">
+    <button type="submit">Send protected POST</button>
+  </form>
+  <section id="csrf-result" class="result" aria-live="polite">
+    <p>Awaiting a protected POST.</p>
+  </section>
+{% endblock %}

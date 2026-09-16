@@ -1,0 +1,87 @@
+:root {
+  color: #1f2937;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+}
+
+.site-header,
+main {
+  margin: auto;
+  max-width: 48rem;
+  padding: 1rem;
+}
+
+.site-header {
+  border-bottom: 1px solid #d1d5db;
+}
+
+nav,
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+main {
+  padding-block: 2rem;
+}
+
+button,
+input {
+  font: inherit;
+  padding: 0.5rem 0.75rem;
+}
+
+button {
+  background: #1d4ed8;
+  border: 1px solid #1d4ed8;
+  border-radius: 0.25rem;
+  color: white;
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+form {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 30rem;
+}
+
+.result {
+  background: #f3f4f6;
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+}
+
+.success {
+  background: #dcfce7;
+}
+
+dl {
+  display: grid;
+  gap: 0.25rem 1rem;
+  grid-template-columns: max-content 1fr;
+}
+
+dt {
+  font-weight: 700;
+}
+
+dd {
+  margin: 0;
+}
+
+code {
+  overflow-wrap: anywhere;
+}

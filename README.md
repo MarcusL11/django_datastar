@@ -110,6 +110,16 @@ bridge assumes Datastar resolves `window.fetch` at request time; see the
 [compatibility documentation](https://django-datastar.readthedocs.io/en/latest/compatibility.html)
 before upgrading Datastar.
 
+## Example application
+
+A small, database-free Django project demonstrates exact request-metadata
+classification, ordinary HTML morphs, and CSRF-protected Datastar POSTs. See
+[the example guide](example/README.rst) and run it from the repository root:
+
+```console
+uv run python example/manage.py runserver
+```
+
 ## Documentation
 
 Build the documentation locally with:
@@ -124,6 +134,8 @@ sphinx-build -W --keep-going -b html docs docs/_build/html
 ```console
 uv sync --group dev
 uv run pytest
+uv run python example/manage.py check
+uv run python example/manage.py test example
 node --test tests/test_datastar_csrf.mjs
 uv run ruff check .
 uv run ruff format --check .

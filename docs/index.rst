@@ -17,6 +17,7 @@ It deliberately does not duplicate Datastar response or SSE APIs. The
    :caption: Contents
 
    installation
+   example
    csrf
    security
    compatibility

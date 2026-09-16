@@ -36,6 +36,10 @@ jobs:
           EOF
           cd /tmp/django-datastar-tests
           /tmp/django-datastar-wheel/bin/python -m pytest tests/test_middleware.py tests/test_csrf.py
+      - name: Test the example application against the installed wheel
+        run: |
+          /tmp/django-datastar-wheel/bin/python "$GITHUB_WORKSPACE/example/manage.py" check
+          /tmp/django-datastar-wheel/bin/python "$GITHUB_WORKSPACE/example/manage.py" test example
 
   node:
     name: Node ${{ matrix.node }} browser-module tests
@@ -82,16 +86,28 @@ jobs:
       - run: python -m pip install build twine
       - run: python -m build
       - run: twine check dist/*
-      - name: Enforce the public sdist contents
+      - name: Enforce package artifact contents
         run: |
           python - <<'PY'
           from pathlib import Path
           import tarfile
+          import zipfile
 
-          allowed = {".gitignore", "docs", "src", "tests", "LICENSE", "PKG-INFO", "README.md", "pyproject.toml"}
+          allowed = {
+              ".gitignore",
+              "docs",
+              "example",
+              "src",
+              "tests",
+              "LICENSE",
+              "PKG-INFO",
+              "README.md",
+              "pyproject.toml",
+          }
           archive = next(Path("dist").glob("*.tar.gz"))
           with tarfile.open(archive) as distribution:
               members = distribution.getnames()
+          relative_members = {"/".join(Path(member).parts[1:]) for member in members}
           unexpected = []
           for member in members:
               relative = Path(member).parts[1:]
@@ -99,6 +115,29 @@ jobs:
                   unexpected.append(member)
           if unexpected:
               raise SystemExit(f"Unexpected sdist files: {unexpected}")
+
+          required = {
+              "example/README.rst",
+              "example/manage.py",
+              "example/example/__init__.py",
+              "example/example/settings.py",
+              "example/example/urls.py",
+              "example/example/views.py",
+              "example/example/tests.py",
+          }
+          missing = required - relative_members
+          if missing:
+              raise SystemExit(f"Missing required sdist files: {sorted(missing)}")
+          for prefix in ("example/example/templates/", "example/example/static/"):
+              if not any(member.startswith(prefix) for member in relative_members):
+                  raise SystemExit(f"Missing required sdist content under {prefix}")
+
+          wheel = next(Path("dist").glob("*.whl"))
+          with zipfile.ZipFile(wheel) as distribution:
+              wheel_members = distribution.namelist()
+          included_example = [member for member in wheel_members if member.startswith("example/")]
+          if included_example:
+              raise SystemExit(f"Example project unexpectedly included in wheel: {included_example}")
           PY
       - name: Smoke-test the installed wheel
         run: |
