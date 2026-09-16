@@ -4,6 +4,9 @@ Changelog
 Unreleased
 ----------
 
+0.1.1 (2026-09-16)
+------------------
+
 * Add an example Django application.
 * Document custom project request types for static type checking.
 * Expand installation and automatic CSRF bridge guidance.
