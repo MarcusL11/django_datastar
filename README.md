@@ -1,3 +1,17 @@
+<p align="center">
+  <picture>
+    <source
+      media="(prefers-color-scheme: dark)"
+      srcset="https://raw.githubusercontent.com/MarcusL11/django_datastar/main/docs/_static/django-datastar-logo-dark.svg"
+    >
+    <img
+      src="https://raw.githubusercontent.com/MarcusL11/django_datastar/main/docs/_static/django-datastar-logo.svg"
+      alt="django-datastar"
+      width="720"
+    >
+  </picture>
+</p>
+
 # django-datastar
 
 `django-datastar` provides small, focused integration points between Django and
@@ -52,6 +66,21 @@ def update(request: DatastarHttpRequest) -> HttpResponse:
 
 `DatastarHttpRequest` is an annotation for requests processed by the middleware;
 Django still creates the actual request object.
+
+If your project already defines a custom request type, declare the middleware
+attribute on that type instead:
+
+```python
+from django.http import HttpRequest as DjangoHttpRequest
+from django_datastar import DatastarDetails
+
+
+class HttpRequest(DjangoHttpRequest):
+    datastar: DatastarDetails
+```
+
+Views can then use the project's `HttpRequest` annotation. This follows the
+custom-request pattern recommended by `django-stubs`.
 
 When middleware-backed request details are not needed, classify a request directly:
 

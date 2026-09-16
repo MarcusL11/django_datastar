@@ -45,3 +45,5 @@ A pinned CDN URL prevents accidental version drift, but it is still a
 third-party code-execution trust boundary. In production, download, review,
 and serve that bundle from your own static origin while preserving the script
 ordering.
+
+For Network-panel diagnosis of failed actions, see :doc:`troubleshooting`.

@@ -16,7 +16,23 @@ main {
 }
 
 .site-header {
+  align-items: center;
   border-bottom: 1px solid #d1d5db;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  justify-content: space-between;
+}
+
+.site-brand {
+  display: block;
+  width: min(18rem, 100%);
+}
+
+.site-brand__logo {
+  display: block;
+  height: auto;
+  width: 100%;
 }
 
 nav,

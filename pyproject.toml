@@ -29,6 +29,7 @@ dependencies = [
 ]
 
 [project.urls]
+Changelog = "https://django-datastar.readthedocs.io/en/latest/changelog.html"
 Documentation = "https://django-datastar.readthedocs.io/"
 Repository = "https://github.com/MarcusL11/django_datastar"
 Issues = "https://github.com/MarcusL11/django_datastar/issues"
@@ -67,6 +68,7 @@ include = [
   "/example",
   "/src",
   "/tests",
+  "/HISTORY.rst",
   "/LICENSE",
   "/README.md",
   "/pyproject.toml",
