@@ -38,14 +38,20 @@ as a companion when those APIs are needed.
 
 ## Installation
 
-Install the package from PyPI:
+Add the package to a uv-managed project:
+
+```console
+uv add django-datastar
+```
+
+Alternatively, install it with pip:
 
 ```console
 python -m pip install django-datastar
 ```
 
-To install a development checkout instead, run `python -m pip install .` from
-the repository root.
+To prepare a development checkout, run `uv sync --group dev` from the repository
+root. Without uv, install the checkout with `python -m pip install .`.
 
 Add the middleware before Django's CSRF middleware:
 
@@ -164,6 +170,15 @@ Build the documentation locally with:
 python -m pip install ".[docs]"
 sphinx-build -W --keep-going -b html docs docs/_build/html
 ```
+
+For a live-reloading documentation server during development, run:
+
+```console
+uv run --with sphinx-autobuild sphinx-autobuild docs docs/_build/html --open-browser
+```
+
+The server rebuilds when documentation files change and is available at
+<http://127.0.0.1:8000>. Stop it with `Ctrl+C`.
 
 ## Development
 

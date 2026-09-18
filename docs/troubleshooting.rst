@@ -122,24 +122,3 @@ named client runtime errors. The commercial `Datastar Inspector
 <https://data-star.dev/pro#datastar-inspector>`_ shows signals, signal patches,
 persisted signals, and received SSE events in real time; it is not documented as
 a renderer for Django error responses or server tracebacks.
-
-Current documentation and the pinned example
----------------------------------------------
-
-The example pins Datastar v1.0.3 for reproducibility, while the upstream links
-on this page are current, unversioned documentation. This package does not pin
-the Datastar bundle. Check the script URL and Network initiator actually loaded,
-and repeat the real-browser checks in :doc:`compatibility` when changing it.
-Treat the v1.0.3 completed-error observation above as version-specific.
-
-Why no runtime debug helper ships
----------------------------------
-
-``django-datastar`` does not ship a runtime debug helper. The documented
-lifecycle surface does not expose a failed response body; displaying one would
-require an invasive global ``window.fetch`` wrapper. A package helper would also
-duplicate Datastar's version-dependent action and response lifecycle and could
-expose sensitive request or response data. Browser DevTools, temporary
-application-owned lifecycle diagnostics, and redacted server observability keep
-that control with the application without expanding this package beyond its
-request-metadata and opt-in-CSRF boundary.
