@@ -1,11 +1,27 @@
 django-datastar Documentation
 =============================
 
+.. warning::
+
+   ``django-datastar`` is an independent, unofficial community plugin. It is not
+   affiliated with, endorsed by, sponsored by, or maintained by the Datastar
+   project or Star Federation. The Datastar name is used solely to describe
+   compatibility with Datastar attributes and expressions.
+
+.. note::
+
+   **AI-assisted development**
+
+   Large language models (LLMs) were used to help generate portions of this
+   project's code and documentation. All LLM-assisted content was reviewed by
+   the author, who remains responsible for this package.
+
 ``django-datastar`` provides request metadata and an opt-in automatic CSRF
 bridge for Django applications using Datastar.
 
-This does not duplicate Datastar response or SSE APIs. The
-``datastar-py`` project should be used alongside this.
+This package does not replace or duplicate Datastar's official Python SDK,
+`datastar-py <https://pypi.org/project/datastar-py/>`_, which provides response
+and SSE helpers.
 
 .. toctree::
    :maxdepth: 2

@@ -39,7 +39,7 @@ request. Keep ``DatastarMiddleware`` before ``CsrfViewMiddleware`` and render
 ``{% datastar_csrf %}`` before the Datastar module: the template tag installs
 the packaged fetch bridge before Datastar sends requests.
 
-The example pins Datastar to
+The example pins Datastar to version 1.0.3:
 ``https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.3/bundles/datastar.js``.
 A pinned CDN URL prevents accidental version drift, but it is still a
 third-party code-execution trust boundary. In production, download, review,

@@ -14,6 +14,13 @@
 
 # django-datastar
 
+## Unofficial project
+
+`django-datastar` is an independent, unofficial community plugin. It is not
+affiliated with, endorsed by, sponsored by, or maintained by the Datastar
+project or Star Federation. The Datastar name is used solely to describe
+compatibility with Datastar attributes and expressions.
+
 `django-datastar` provides small, focused integration points between Django and
 [Datastar](https://data-star.dev/):
 
@@ -31,14 +38,20 @@ as a companion when those APIs are needed.
 
 ## Installation
 
-Install the package from PyPI:
+Add the package to a uv-managed project:
+
+```console
+uv add django-datastar
+```
+
+Alternatively, install it with pip:
 
 ```console
 python -m pip install django-datastar
 ```
 
-To install a development checkout instead, run `python -m pip install .` from
-the repository root.
+To prepare a development checkout, run `uv sync --group dev` from the repository
+root. Without uv, install the checkout with `python -m pip install .`.
 
 Add the middleware before Django's CSRF middleware:
 
@@ -158,6 +171,15 @@ python -m pip install ".[docs]"
 sphinx-build -W --keep-going -b html docs docs/_build/html
 ```
 
+For a live-reloading documentation server during development, run:
+
+```console
+uv run --with sphinx-autobuild sphinx-autobuild docs docs/_build/html --open-browser
+```
+
+The server rebuilds when documentation files change and is available at
+<http://127.0.0.1:8000>. Stop it with `Ctrl+C`.
+
 ## Development
 
 ```console
@@ -173,6 +195,12 @@ uv run mypy
 
 Node is contributor and CI tooling only. It is not a runtime dependency for
 Django applications.
+
+## AI-assisted development
+
+Large language models (LLMs) were used to help generate portions of this
+project's code and documentation. All LLM-assisted content was reviewed and
+approved by the author, who remains responsible for the final work.
 
 ## License
 

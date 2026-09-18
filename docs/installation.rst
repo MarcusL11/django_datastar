@@ -16,20 +16,28 @@ install or pin that bundle. The example application pins Datastar v1.0.3 for
 reproducibility; check :doc:`compatibility` when choosing or upgrading the
 bundle.
 
-`datastar-py <https://pypi.org/project/datastar-py/>`_ is recommended for constructing Datastar
-responses and SSE events.
+Datastar's official Python SDK,
+`datastar-py <https://pypi.org/project/datastar-py/>`_, is recommended for
+constructing Datastar responses and SSE events.
 
 Install the package
 -------------------
 
-Install the package from PyPI:
+Add the package to a uv-managed project:
+
+.. code-block:: console
+
+   uv add django-datastar
+
+Alternatively, install it with pip:
 
 .. code-block:: console
 
    python -m pip install django-datastar
 
-To install a development checkout instead, run ``python -m pip install .`` from
-the repository root.
+To prepare a development checkout, run ``uv sync --group dev`` from the
+repository root. Without uv, install the checkout with
+``python -m pip install .``.
 
 Request metadata
 ----------------
@@ -46,8 +54,10 @@ Add the middleware before Django's CSRF middleware:
    ]
 
 Every request that reaches the rest of the middleware chain then has a
-``datastar`` details object. Its truth value is true only when the
-``Datastar-Request`` header value is exactly ``true``.
+``datastar`` details object. Its truth value is true only when the normalized
+``Datastar-Request`` header value is exactly ``true``; the comparison is
+case-sensitive. The marker is client-controlled metadata and must not authorize
+a request or bypass CSRF protection.
 
 For a typed view annotation:
 
@@ -112,8 +122,9 @@ To enable the opt-in CSRF bridge, add the app:
        "django_datastar",
    ]
 
-In a request-aware template, load the package tag and render it before the
-Datastar module. Choose either a CDN-hosted or self-hosted Datastar bundle.
+In a request-aware base template, load the package tag library and render
+``{% datastar_csrf %}`` immediately before the script element that loads
+Datastar. Choose either a CDN-hosted or self-hosted Datastar bundle.
 
 For a CDN-hosted bundle:
 

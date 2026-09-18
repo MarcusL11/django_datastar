@@ -4,6 +4,15 @@ Changelog
 Unreleased
 ----------
 
+0.1.2 (2026-09-18)
+------------------
+
+* Flatten the example application's directory structure.
+* Add unofficial-project and AI-assisted-development disclosures.
+* Add uv installation and live documentation commands.
+* Document CSRF and Datastar response caching requirements.
+* Refine installation, compatibility, security, and troubleshooting guidance.
+
 0.1.1 (2026-09-16)
 ------------------
 
