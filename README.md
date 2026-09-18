@@ -14,6 +14,13 @@
 
 # django-datastar
 
+## Unofficial project
+
+`django-datastar` is an independent, unofficial community plugin. It is not
+affiliated with, endorsed by, sponsored by, or maintained by the Datastar
+project or Star Federation. The Datastar name is used solely to describe
+compatibility with Datastar attributes and expressions.
+
 `django-datastar` provides small, focused integration points between Django and
 [Datastar](https://data-star.dev/):
 
