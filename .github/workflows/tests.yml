@@ -120,16 +120,15 @@ jobs:
           required = {
               "example/README.rst",
               "example/manage.py",
-              "example/example/__init__.py",
-              "example/example/settings.py",
-              "example/example/urls.py",
-              "example/example/views.py",
-              "example/example/tests.py",
+              "example/settings.py",
+              "example/urls.py",
+              "example/views.py",
+              "example/tests.py",
           }
           missing = required - relative_members
           if missing:
               raise SystemExit(f"Missing required sdist files: {sorted(missing)}")
-          for prefix in ("example/example/templates/", "example/example/static/"):
+          for prefix in ("example/templates/", "example/static/"):
               if not any(member.startswith(prefix) for member in relative_members):
                   raise SystemExit(f"Missing required sdist content under {prefix}")
 

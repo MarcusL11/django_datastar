@@ -174,6 +174,12 @@ uv run mypy
 Node is contributor and CI tooling only. It is not a runtime dependency for
 Django applications.
 
+## AI-assisted development
+
+Large language models (LLMs) were used to help generate portions of this
+project's code and documentation. All LLM-assisted content was reviewed and
+approved by the author, who remains responsible for the final work.
+
 ## License
 
 MIT

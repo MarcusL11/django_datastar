@@ -11,7 +11,6 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
 INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_datastar",
-    "example",
 ]
 
 MIDDLEWARE = [
@@ -19,7 +18,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
 ]
 
-ROOT_URLCONF = "example.urls"
+ROOT_URLCONF = "urls"
 DATABASES: dict[str, dict[str, Any]] = {}
 
 TEMPLATES = [

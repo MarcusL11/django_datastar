@@ -19,3 +19,10 @@ This does not duplicate Datastar response or SSE APIs. The
    api
    changelog
    troubleshooting
+
+AI-assisted development
+------------------------
+
+Large language models (LLMs) were used to help generate portions of this
+project's code and documentation. All LLM-assisted content was reviewed and
+approved by the author, who remains responsible for the final work.
