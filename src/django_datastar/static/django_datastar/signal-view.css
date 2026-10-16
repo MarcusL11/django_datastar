@@ -14,10 +14,10 @@
 .datastar-signal-toggle {
   display: block;
   margin-left: auto;
-  padding: 0.35rem 0.7rem;
+  padding: 0.35rem 0.7rem 0.35rem 2.2rem;
   border: 1px solid #77808d;
   border-radius: 0.4rem;
-  background: #242a32;
+  background: #242a32 url("img/django-datastar-icon.svg") no-repeat 0.45rem center / 1.3rem 1.3rem;
   color: #f5f5f5;
   font: inherit;
   cursor: pointer;

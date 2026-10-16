@@ -52,6 +52,14 @@ const page = `<!doctype html>
       window.datastar = module;
     }
     await waitFor(() => toggle() && collector(), 'the staff control and collector');
+    const iconUrl = '/img/django-datastar-icon.svg';
+    if (!getComputedStyle(toggle()).backgroundImage.includes(iconUrl)) {
+      throw new Error('The control does not use the package icon.');
+    }
+    const icon = new Image();
+    icon.src = iconUrl;
+    await icon.decode();
+    if (icon.naturalWidth === 0) throw new Error('The package icon did not load.');
     if (visible(view())) throw new Error('The view opened without a staff action.');
     toggle().click();
     await waitFor(() => visible(view()) && output()?.textContent.includes('browser-secret'), 'the raw view');
@@ -126,6 +134,7 @@ test("full Datastar 1.0.4 shows live raw signals and clears an empty projection"
       "/signal-view.js": [join(staticDir, "signal-view.js"), "text/javascript"],
       "/signal-collector.js": [join(staticDir, "signal-collector.js"), "text/javascript"],
       "/signal-view.css": [join(staticDir, "signal-view.css"), "text/css"],
+      "/img/django-datastar-icon.svg": [join(staticDir, "img/django-datastar-icon.svg"), "image/svg+xml"],
     };
     const entry = files[request.url];
     if (request.url === "/") {
