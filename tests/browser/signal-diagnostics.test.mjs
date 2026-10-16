@@ -61,8 +61,9 @@ const page = `<!doctype html>
     window.datastar.root.count = 3;
     await waitFor(() => JSON.parse(probe().textContent).count === 3, 'the updated projection');
     await waitFor(() => output()?.textContent.includes('3'), 'the updated view');
-    collector().removeAttribute('data-json-signals__terse');
-    collector().textContent = '';
+    const projection = collector();
+    projection.removeAttribute('data-json-signals__terse');
+    projection.textContent = '';
     await waitFor(() => visible(status()) && status().textContent.toLowerCase().includes('unavailable'), 'the unavailable status');
     if (output()?.textContent.includes('browser-secret') || output()?.textContent.includes('3')) {
       throw new Error('The view shows old values after an empty projection.');
