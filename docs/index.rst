@@ -30,6 +30,7 @@ and SSE helpers.
    installation
    example
    csrf
+   signal-diagnostics
    security
    compatibility
    api

@@ -152,6 +152,12 @@ bridge assumes Datastar resolves `window.fetch` at request time; see the
 [compatibility documentation](https://django-datastar.readthedocs.io/en/latest/compatibility.html)
 before upgrading Datastar.
 
+## Signal diagnostics
+
+On selected pages, authenticated, active staff can use an optional floating view of raw Datastar signals.
+The view also works with `DEBUG=False`. Keep private values out of browser signals.
+See the [signal diagnostics guide](https://django-datastar.readthedocs.io/en/latest/signal-diagnostics.html) for setup, tested bundle support, CSP assumptions, and limits.
+
 ## Example application
 
 A small, database-free Django project demonstrates exact request-metadata
