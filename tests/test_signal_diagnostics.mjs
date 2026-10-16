@@ -14,6 +14,11 @@ class ProjectionObserver {
   }
 
   observe(target, options) {
+    if (target === globalThis.document.body) {
+      assert.equal(options.childList, true);
+      assert.equal(options.subtree, true);
+      return;
+    }
     assert.equal(target, collector);
     assert.equal(options.childList, true);
     assert.equal(options.subtree, true);
