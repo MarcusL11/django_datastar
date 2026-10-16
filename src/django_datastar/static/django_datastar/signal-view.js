@@ -51,6 +51,11 @@ function installSignalView() {
       status.hidden = false;
     }
   });
+
+  const controlObserver = new MutationObserver(() => {
+    if (!control.isConnected) document.body.append(control);
+  });
+  controlObserver.observe(document.body, { childList: true, subtree: true });
 }
 
 if (document.readyState === "loading") {

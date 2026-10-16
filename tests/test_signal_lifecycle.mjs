@@ -96,6 +96,10 @@ test("a removed collector clears old values and recovers after a new projection"
 
   const current = page.projection() ?? collector;
   if (!current.isConnected) page.body.append(current);
+  page.project(current, '{"count":2,"secret":"old-value"}');
+  assert.deepEqual(states.at(-1), { status: "unavailable" });
+  page.project(collector, '{"count":99,"secret":"detached-value"}');
+  assert.deepEqual(states.at(-1), { status: "unavailable" });
   page.project(current, '{"count":4,"secret":"new-value"}');
   assert.deepEqual(states.at(-1), {
     status: "ready", value: { count: 4, secret: "new-value" },
