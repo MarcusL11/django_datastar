@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
 
 import { createSignalCollector } from "../src/django_datastar/static/django_datastar/signal-collector.js";
+import "./test_signal_lifecycle.mjs";
 
 let collector;
 let observer;

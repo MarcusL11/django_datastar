@@ -20,6 +20,12 @@ function dom() {
     contains(node) {
       return this.children.includes(node);
     },
+    replaceChildren(...nodes) {
+      for (const child of this.children) child.isConnected = false;
+      this.children = nodes;
+      for (const node of nodes) node.isConnected = true;
+      notify(this);
+    },
   };
   function notify(target) {
     for (const observer of observers) {
@@ -60,6 +66,19 @@ function dom() {
   };
 }
 
+test("a collector installed before the bundle reads its later projection", () => {
+  const page = dom();
+  const states = [];
+  const stop = createSignalCollector((state) => states.push(state));
+  assert.deepEqual(states, [{ status: "unavailable" }]);
+
+  page.project(page.projection(), '{"late":"current-value"}');
+  assert.deepEqual(states.at(-1), {
+    status: "ready", value: { late: "current-value" },
+  });
+  stop();
+});
+
 test("a removed collector clears old values and recovers after a new projection", () => {
   const page = dom();
   const states = [];
@@ -80,6 +99,30 @@ test("a removed collector clears old values and recovers after a new projection"
   page.project(current, '{"count":4,"secret":"new-value"}');
   assert.deepEqual(states.at(-1), {
     status: "ready", value: { count: 4, secret: "new-value" },
+  });
+  stop();
+});
+
+test("a page morph clears old data and reads a new collector", () => {
+  const page = dom();
+  const states = [];
+  const stop = createSignalCollector((state) => states.push(state));
+  const original = page.projection();
+
+  page.project(original, '{"page":"first-value"}');
+  assert.deepEqual(states.at(-1), {
+    status: "ready", value: { page: "first-value" },
+  });
+
+  page.body.replaceChildren({ isConnected: false, textContent: undefined });
+  assert.deepEqual(states.at(-1), { status: "unavailable" });
+  assert.equal(JSON.stringify(states.at(-1)).includes("first-value"), false);
+
+  const next = page.projection();
+  assert.ok(next?.isConnected, "The morphed page needs a collector.");
+  page.project(next, '{"page":"second-value"}');
+  assert.deepEqual(states.at(-1), {
+    status: "ready", value: { page: "second-value" },
   });
   stop();
 });
