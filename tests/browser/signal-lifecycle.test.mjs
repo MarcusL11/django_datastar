@@ -35,6 +35,7 @@ const page = `<!doctype html>
   const collector = () => document.querySelector('pre[data-json-signals__terse]');
   const output = () => document.querySelector('[data-datastar-signal-output]');
   const status = () => document.querySelector('[data-datastar-signal-status]');
+  const search = () => document.querySelector('[data-datastar-signal-search]');
   const ready = (value) => output()?.textContent.includes(value) && !output().hidden;
   const unavailable = () => !status()?.hidden && output()?.hidden && !output().textContent;
   try {
@@ -42,10 +43,13 @@ const page = `<!doctype html>
     await waitFor(() => toggle() && collector() && unavailable(), 'the initial unavailable view');
     toggle().click();
     if (view().hidden) throw new Error('The view did not open.');
+    search().value = 'secret';
+    search().dispatchEvent(new Event('input', {bubbles: true}));
+    if (!unavailable()) throw new Error('Search replaced the unavailable status.');
 
     const datastar = await import('/datastar.js');
     window.datastar = datastar;
-    await waitFor(() => ready('first-value'), 'the late Datastar projection');
+    await waitFor(() => ready('secret: "first-value"'), 'the filtered late Datastar projection');
 
     const original = collector();
     original.remove();
@@ -57,14 +61,14 @@ const page = `<!doctype html>
     await waitFor(() => collector(), 'a collector after removal');
     datastar.root.count = 4;
     datastar.root.secret = 'recovered-value';
-    await waitFor(() => ready('recovered-value') && !output().textContent.includes('first-value'), 'recovery after removal');
+    await waitFor(() => ready('secret: "recovered-value"') && !output().textContent.includes('first-value'), 'recovery after removal');
 
     document.body.replaceChildren(Object.assign(document.createElement('main'), {id: 'page', textContent: 'Next page'}));
     await waitFor(() => toggle() && collector(), 'the control after a page morph');
     datastar.root.secret = 'morphed-value';
     await waitFor(() => collector()?.textContent.includes('morphed-value'), 'the projection after a page morph');
     if (view().hidden) toggle().click();
-    await waitFor(() => ready('morphed-value'), 'the current view after a page morph');
+    await waitFor(() => ready('secret: "morphed-value"') && search().value === 'secret', 'the current filtered view after a page morph');
     if (output().textContent.includes('recovered-value')) {
       throw new Error('The page morph left old values in the view.');
     }
@@ -119,6 +123,7 @@ test("full Datastar 1.0.4 keeps the view current after late load, removal, and p
       "/datastar.js": [bundle, "text/javascript"],
       "/signal-view.js": [join(staticDir, "signal-view.js"), "text/javascript"],
       "/signal-collector.js": [join(staticDir, "signal-collector.js"), "text/javascript"],
+      "/signal-filter.js": [join(staticDir, "signal-filter.js"), "text/javascript"],
     };
     const entry = files[request.url];
     if (request.url === "/") {

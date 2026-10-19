@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import re
 
+from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django.test import Client
 from django.test import SimpleTestCase
+from django.test import TestCase
+from django.test import override_settings
 from django.urls import reverse
 
 PINNED_DATASTAR_URL = (
-    "https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.3/bundles/datastar.js"
+    "https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.4/bundles/datastar.js"
 )
 TOKEN_PATTERN = re.compile(
     r'<meta name="datastar-csrf-token" content="([A-Za-z0-9]{64})"\s*/?>'
@@ -22,6 +25,12 @@ class PageTests(SimpleTestCase):
                 response = self.client.get(reverse(name))
                 self.assertEqual(response.status_code, 200)
                 self.assertTrue(response["Content-Type"].startswith("text/html"))
+
+    def test_shared_layout_uses_pinned_bundle(self) -> None:
+        for name in ("home", "request_metadata", "csrf_demo"):
+            with self.subTest(name=name):
+                response = self.client.get(reverse(name))
+                self.assertContains(response, PINNED_DATASTAR_URL)
 
     def test_shared_layout_uses_brand_assets(self) -> None:
         response = self.client.get(reverse("home"))
@@ -57,6 +66,75 @@ class PageTests(SimpleTestCase):
             f"@post('{reverse('csrf_submit')}', {{contentType: 'form'}})",
         )
         self.assertContains(response, 'id="csrf-result"')
+
+
+class SignalDiagnosticsExampleTests(TestCase):
+    def setUp(self) -> None:
+        self.url = reverse("signal_diagnostics")
+        self.user = get_user_model().objects.create_user(
+            username="demo-staff", password="local-demo-password", is_staff=True
+        )
+
+    def test_anonymous_visitor_is_redirected_to_login(self) -> None:
+        response = self.client.get(self.url)
+
+        self.assertRedirects(
+            response,
+            f"{reverse('login')}?next={self.url}",
+            fetch_redirect_response=False,
+        )
+        self.assertNotIn(b"signal-view.js", response.content)
+        self.assertNotContains(self.client.get(reverse("home")), self.url)
+
+    def test_staff_can_sign_in_and_out(self) -> None:
+        response = self.client.post(
+            reverse("login"),
+            {"username": "demo-staff", "password": "local-demo-password"},
+        )
+        self.assertRedirects(response, self.url, fetch_redirect_response=False)
+        self.assertContains(self.client.get(self.url), "django_datastar/signal-view.js")
+
+        self.client.post(reverse("logout"))
+        self.assertRedirects(
+            self.client.get(self.url),
+            f"{reverse('login')}?next={self.url}",
+            fetch_redirect_response=False,
+        )
+
+    def test_nonstaff_user_cannot_see_the_page_or_menu_link(self) -> None:
+        self.user.is_staff = False
+        self.user.save()
+        self.client.force_login(self.user)
+
+        self.assertEqual(self.client.get(self.url).status_code, 403)
+        self.assertNotContains(
+            self.client.get(reverse("home")),
+            reverse("signal_diagnostics"),
+        )
+
+    def test_inactive_staff_user_cannot_see_the_view(self) -> None:
+        self.user.is_active = False
+        self.user.save()
+        self.client.force_login(self.user)
+
+        response = self.client.get(self.url)
+        self.assertNotIn(b"signal-view.js", response.content)
+        self.assertNotContains(self.client.get(reverse("home")), self.url)
+
+    @override_settings(DEBUG=False)
+    def test_staff_sees_live_demo_and_view_assets(self) -> None:
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        content = response.content.decode()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(PINNED_DATASTAR_URL, content)
+        self.assertIn('data-signals="{count: 0, enabled: false}"', content)
+        self.assertIn('data-on:click="$count++"', content)
+        self.assertIn('data-on:click="$enabled = !$enabled"', content)
+        self.assertIn("django_datastar/signal-view.js", content)
+        self.assertIn("django_datastar/signal-view.css", content)
+        self.assertContains(self.client.get(reverse("home")), self.url)
 
 
 class SyncRequestMetadataTests(SimpleTestCase):

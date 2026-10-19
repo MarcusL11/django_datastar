@@ -4,6 +4,15 @@ Changelog
 Unreleased
 ----------
 
+0.2.0 (2026-10-19)
+------------------
+
+* Add a staff-only browser signal view for selected pages, including when ``DEBUG=False``.
+* Show raw values and live name or path search. Clear old results when the projection fails.
+* Keep the view current after late bundle loads, body changes, collector removal, and recovery.
+* Add a staff-only example page with controls for two signals. Pin the example to Datastar 1.0.4.
+* Document the access boundary, raw-value exposure, browser support, CSP assumptions, and projection limits.
+
 0.1.2 (2026-09-18)
 ------------------
 

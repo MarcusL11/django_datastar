@@ -39,7 +39,8 @@ jobs:
       - name: Test the example application against the installed wheel
         run: |
           /tmp/django-datastar-wheel/bin/python "$GITHUB_WORKSPACE/example/manage.py" check
-          /tmp/django-datastar-wheel/bin/python "$GITHUB_WORKSPACE/example/manage.py" test example
+          cd "$GITHUB_WORKSPACE/example"
+          /tmp/django-datastar-wheel/bin/python manage.py test
 
   node:
     name: Node ${{ matrix.node }} browser-module tests
@@ -61,6 +62,12 @@ jobs:
         run: |
           unzip -q dist/*.whl -d /tmp/django-datastar-wheel
           DATASTAR_CSRF_MODULE="/tmp/django-datastar-wheel/django_datastar/static/django_datastar/datastar-csrf.js" node tests/test_datastar_csrf.mjs
+      - name: Test the Datastar 1.0.4 example in Chrome
+        run: |
+          python -m pip install dist/*.whl
+          node --test tests/test_signal_filter.mjs
+          EXAMPLE_PYTHON="$(command -v python)" node --test tests/browser/example-1.0.4.test.mjs
+          node --test tests/browser/signal-diagnostics.test.mjs
 
   quality:
     runs-on: ubuntu-latest

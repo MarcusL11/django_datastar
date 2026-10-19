@@ -24,10 +24,11 @@ compatibility with Datastar attributes and expressions.
 `django-datastar` provides small, focused integration points between Django and
 [Datastar](https://data-star.dev/):
 
-- exact request classification through `Datastar-Request: true`;
-- sync/async middleware-backed `request.datastar` metadata; and
+- exact request classification through `Datastar-Request: true`.
+- sync and async middleware-backed `request.datastar` metadata.
 - an opt-in bridge that supplies Django CSRF tokens to qualifying Datastar
   backend-action requests.
+- an opt-in staff-only view of current browser signals on selected pages.
 
 It does not provide Datastar response or SSE APIs. Use
 [`datastar-py`](https://github.com/starfederation/datastar/tree/main/sdk/python)
@@ -158,13 +159,17 @@ On selected pages, authenticated, active staff can use an optional floating view
 The view also works with `DEBUG=False`. Keep private values out of browser signals.
 See the [signal diagnostics guide](https://django-datastar.readthedocs.io/en/latest/signal-diagnostics.html) for setup, tested bundle support, CSP assumptions, and limits.
 
+![Open signal panel with a search for the enabled signal](https://raw.githubusercontent.com/MarcusL11/django_datastar/main/docs/_static/signal-diagnostics.png)
+
 ## Example application
 
-A small, database-free Django project demonstrates exact request-metadata
-classification, ordinary HTML morphs, and CSRF-protected Datastar POSTs. See
+A small Django project shows request metadata, CSRF-protected Datastar POSTs,
+and a staff-only signal view. See
 [the example guide](example/README.rst) and run it from the repository root:
 
 ```console
+uv run python example/manage.py migrate
+uv run python example/manage.py createsuperuser
 uv run python example/manage.py runserver
 ```
 
@@ -192,13 +197,16 @@ The server rebuilds when documentation files change and is available at
 uv sync --group dev
 uv run pytest
 uv run python example/manage.py check
-uv run python example/manage.py test example
+(cd example && uv run python manage.py test)
 node --test tests/test_datastar_csrf.mjs
+node --test tests/test_signal_filter.mjs
+node --test tests/browser/example-1.0.4.test.mjs
 uv run ruff check .
 uv run ruff format --check .
 uv run mypy
 ```
 
+The browser check uses Chrome or Chromium and the pinned Datastar 1.0.4 test bundle.
 Node is contributor and CI tooling only. It is not a runtime dependency for
 Django applications.
 

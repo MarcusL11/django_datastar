@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
@@ -12,6 +14,14 @@ from django_datastar import DatastarHttpRequest
 def home(request: DatastarHttpRequest) -> HttpResponse:
     """Render the example overview."""
     return render(request, "home.html")
+
+
+@login_required(login_url="login")
+@require_GET
+def signal_diagnostics(request: DatastarHttpRequest) -> HttpResponse:
+    if not (request.user.is_active and request.user.is_staff):
+        raise PermissionDenied
+    return render(request, "signal_diagnostics.html")
 
 
 @require_GET

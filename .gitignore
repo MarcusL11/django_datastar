@@ -9,3 +9,4 @@ dist/
 docs/_build/
 qrspi/
 *.egg-info/
+example/db.sqlite3

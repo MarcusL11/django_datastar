@@ -16,8 +16,8 @@ django-datastar Documentation
    project's code and documentation. All LLM-assisted content was reviewed by
    the author, who remains responsible for this package.
 
-``django-datastar`` provides request metadata and an opt-in automatic CSRF
-bridge for Django applications using Datastar.
+``django-datastar`` provides request metadata, an opt-in CSRF bridge, and
+staff-only browser signal diagnostics for Django applications using Datastar.
 
 This package does not replace or duplicate Datastar's official Python SDK,
 `datastar-py <https://pypi.org/project/datastar-py/>`_, which provides response

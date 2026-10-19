@@ -16,14 +16,33 @@ The tag emits a stylesheet and an external module for authenticated, active staf
 It emits no markup for other visitors, and it works with ``DEBUG=False``.
 The tag needs a request-aware template context and raises a template error without one.
 Select pages explicitly. The package does not add the view to every page.
+The :doc:`example` shows this tag on a staff-only page with Datastar 1.0.4.
 
-The module adds a small Signals button to the page. Select it to open or close the floating view.
+The module adds an icon button at the bottom right of the page. Select it to open or close the floating view.
 The view reads Datastar's JSON signal projection from a hidden element on the current page.
 It shows the current raw JSON values as text, including nested values, with no redaction.
 Keep secrets out of browser signals if staff must not see them.
 
 Do not serve staff pages with this tag from a public shared cache.
 This feature does not collect request data or signal history, and it does not use Django Debug Toolbar.
+
+Search signals
+--------------
+
+The open panel has a search field for signal names and paths.
+The filter updates as you type and ignores letter case. It does not search values.
+For example, ``name`` finds ``user.name`` and shows its current value with the full path.
+A parent match shows the full group. Array paths keep their original indexes.
+
+Clear the search to show the full JSON projection again.
+The filter stays active when signal values change.
+No matching path shows ``No matching signals.``
+
+An unavailable projection shows ``Signals unavailable.`` instead of old results, even with an active search.
+Search runs in the browser. It sends no request and does not change Datastar signals.
+
+The demo has ``count`` and ``enabled`` signals. Each signal has a page button that changes its value.
+Search for either name in the panel while you use its button.
 
 Tested bundle
 -------------
@@ -53,7 +72,7 @@ Real-browser signal tests do not use a restrictive CSP. Check your complete poli
 Limits and unavailable state
 ----------------------------
 
-The collector parses the complete projection, and the view displays formatted JSON in a scrollable panel.
+The collector parses the complete projection, and the view displays full or filtered data in a scrollable panel.
 The package sets no byte or signal count limit. No maximum projection size has a browser test.
 Large values can slow the browser or use much memory. Do not use this view for large signal trees.
 

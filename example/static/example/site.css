@@ -42,6 +42,22 @@ nav,
   gap: 1rem;
 }
 
+nav {
+  align-items: center;
+}
+
+.nav-form {
+  display: block;
+}
+
+.nav-form button {
+  background: none;
+  border: 0;
+  color: #1d4ed8;
+  padding: 0;
+  text-decoration: underline;
+}
+
 main {
   padding-block: 2rem;
 }

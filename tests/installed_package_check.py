@@ -42,6 +42,7 @@ def main() -> None:
     assets = (
         "signal-view.js",
         "signal-collector.js",
+        "signal-filter.js",
         "signal-view.css",
         "img/django-datastar-icon.svg",
     )
@@ -53,9 +54,7 @@ def main() -> None:
     signals = engines["django"].from_string(
         "{% load django_datastar %}{% datastar_signals %}"
     )
-    request.user = SimpleNamespace(
-        is_authenticated=True, is_active=True, is_staff=True
-    )
+    request.user = SimpleNamespace(is_authenticated=True, is_active=True, is_staff=True)
     staff_markup = signals.render({}, request)
     assert 'src="/static/django_datastar/signal-view.js"' in staff_markup
     assert 'href="/static/django_datastar/signal-view.css"' in staff_markup

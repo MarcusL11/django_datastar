@@ -69,7 +69,7 @@ def test_tag_shows_no_diagnostic_markup_without_a_user() -> None:
 @pytest.mark.parametrize("safe", [False, True], ids=["plain", "marked-safe"])
 def test_tag_escapes_an_optional_script_nonce(safe: bool) -> None:
     user = _user(authenticated=True, staff=True, active=True)
-    payload = '\"><img src=x onerror=alert(1)>'
+    payload = '"><img src=x onerror=alert(1)>'
     nonce = mark_safe(payload) if safe else payload
 
     rendered = _render(
