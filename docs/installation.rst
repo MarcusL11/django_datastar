@@ -12,7 +12,7 @@ Requirements
 
 A consuming application supplies its own `Datastar
 <https://data-star.dev/>`_ JavaScript bundle. ``django-datastar`` does not
-install or pin that bundle. The example application pins Datastar v1.0.3 for
+install or pin that bundle. The example application pins Datastar v1.0.4 for
 reproducibility; check :doc:`compatibility` when choosing or upgrading the
 bundle.
 
@@ -140,7 +140,7 @@ For a CDN-hosted bundle:
        {% datastar_csrf %}
        <script
          type="module"
-         src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.3/bundles/datastar.js"
+         src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.4/bundles/datastar.js"
        ></script>
      </head>
      <body>

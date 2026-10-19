@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "django-datastar"
-version = "0.1.2"
-description = "Request metadata and opt-in CSRF integration for Django and Datastar"
+version = "0.2.0"
+description = "Request metadata, CSRF bridge, and staff-only signal diagnostics for Django and Datastar"
 readme = "README.md"
 license = "MIT"
 authors = [

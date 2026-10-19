@@ -5,13 +5,15 @@
 {% block main %}
   <h1>django-datastar example</h1>
   <p>
-    This database-free project demonstrates exact Datastar request metadata,
-    ordinary HTML morph responses, and Django-enforced CSRF with the packaged
-    fetch bridge.
+    This example shows Datastar request metadata, ordinary HTML morph responses,
+    CSRF protection, and a staff-only signal view.
   </p>
   <ul>
     <li><a href="{% url 'request_metadata' %}">Inspect sync and async request metadata</a></li>
     <li><a href="{% url 'csrf_demo' %}">Send a CSRF-protected Datastar POST</a></li>
+    {% if request.user.is_authenticated and request.user.is_active and request.user.is_staff %}
+      <li><a href="{% url 'signal_diagnostics' %}">Open Signal diagnostics</a></li>
+    {% endif %}
   </ul>
   <p>
     <strong>Security note:</strong> the request marker is descriptive,

@@ -9,17 +9,26 @@ DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
 
 INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
     "django.contrib.staticfiles",
     "django_datastar",
 ]
 
 MIDDLEWARE = [
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django_datastar.middleware.DatastarMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
 ]
 
 ROOT_URLCONF = "urls"
-DATABASES: dict[str, dict[str, Any]] = {}
+DATABASES: dict[str, dict[str, Any]] = {
+    "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}
+}
+LOGIN_REDIRECT_URL = "/signals/"
+LOGOUT_REDIRECT_URL = "/"
 
 TEMPLATES = [
     {

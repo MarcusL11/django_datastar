@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load django_datastar %}
+
+{% block title %}Signal diagnostics | django-datastar example{% endblock %}
+{% block html_attributes %} data-signals="{count: 0, enabled: false}"{% endblock %}
+{% block extra_head %}{% datastar_signals %}{% endblock %}
+
+{% block main %}
+  <h1>Signal diagnostics</h1>
+  <p>Change the count or enabled state, then search for either signal in the panel.</p>
+  <p>The panel shows raw browser signals. Do not put secrets in these values.</p>
+  <div class="actions">
+    <button type="button" data-on:click="$count++">Add one</button>
+    <span role="status">Count: <output data-text="$count">0</output></span>
+    <button type="button" data-on:click="$enabled = !$enabled">Change enabled</button>
+    <span role="status">Enabled: <output data-text="$enabled ? 'yes' : 'no'">no</output></span>
+  </div>
+{% endblock %}

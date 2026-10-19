@@ -1,0 +1,81 @@
+.datastar-signal-control {
+  position: fixed;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  right: max(1rem, env(safe-area-inset-right));
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  z-index: 2147483647;
+  font: 13px/1.4 system-ui, sans-serif;
+  color: #f5f5f5;
+}
+
+.datastar-signal-control [hidden] {
+  display: none;
+}
+
+.datastar-signal-toggle {
+  display: block;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #77808d;
+  border-radius: 0.4rem;
+  background: #242a32 url("img/django-datastar-icon.svg") no-repeat center / 1.5rem 1.5rem;
+  color: #f5f5f5;
+  font: inherit;
+  cursor: pointer;
+}
+
+.datastar-signal-toggle:focus-visible {
+  outline: 2px solid #8ecbff;
+  outline-offset: 2px;
+}
+
+.datastar-signal-view {
+  box-sizing: border-box;
+  width: min(25rem, calc(100vw - 2rem));
+  max-height: min(32rem, calc(100vh - 5rem));
+  overflow: auto;
+  margin-bottom: 0.4rem;
+  padding: 0.75rem;
+  border: 1px solid #77808d;
+  border-radius: 0.4rem;
+  background: #242a32;
+  box-shadow: 0 4px 16px #0006;
+}
+
+.datastar-signal-search-label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.datastar-signal-search {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #77808d;
+  border-radius: 0.25rem;
+  background: #171d24;
+  color: #f5f5f5;
+  color-scheme: dark;
+  font: inherit;
+}
+
+.datastar-signal-search:focus-visible {
+  outline: 2px solid #8ecbff;
+  outline-offset: 2px;
+}
+
+.datastar-signal-status,
+.datastar-signal-no-matches {
+  margin: 0;
+}
+
+.datastar-signal-output {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.5 ui-monospace, monospace;
+}

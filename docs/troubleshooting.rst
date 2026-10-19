@@ -36,15 +36,16 @@ Quick DevTools triage
 A completed 4xx or 5xx
 ----------------------
 
-With the Datastar **v1.0.3** bundle pinned by the :doc:`example`, a completed
-4xx or 5xx response is not patched into the page. When the page appears
+An earlier browser check with Datastar **v1.0.3** showed that a completed
+4xx or 5xx response did not change the page. The :doc:`example` now uses
+v1.0.4. Check its response behavior in your browser. When the page appears
 unchanged, inspect the request's status and **Response** in DevTools. With
 Django ``DEBUG=True``, a completed HTML 500 response may contain Django's
 technical error page. Treat it as sensitive: do not paste or attach settings,
 request data, paths, frame locals, tokens, or other secrets from it.
 
-This is a verified v1.0.3 observation, not a guarantee for every Datastar
-release. The current `response-handling documentation
+The earlier v1.0.3 observation does not establish v1.0.4 behavior. The current
+`response-handling documentation
 <https://data-star.dev/reference/actions#response-handling>`_ documents response
 content types, but does not specify this exact non-200 policy. A connection
 failure need not have a response, and a stream that ends later has only the

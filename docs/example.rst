@@ -2,18 +2,20 @@ Example application
 ===================
 
 The `example application <https://github.com/MarcusL11/django_datastar/tree/main/example>`_
-is a small, database-free Django project for inspecting django-datastar in a
-browser. Its `README <https://github.com/MarcusL11/django_datastar/blob/main/example/README.rst>`_
+is a small Django project for inspecting django-datastar in a browser. Its
+`README <https://github.com/MarcusL11/django_datastar/blob/main/example/README.rst>`_
 has the complete walkthrough.
 
-Run it from a repository checkout without migrations or database setup:
+From a repository checkout, create a local staff account and start the server:
 
 .. code-block:: console
 
+   uv run python example/manage.py migrate
+   uv run python example/manage.py createsuperuser
    uv run python example/manage.py runserver
 
-Then open ``http://127.0.0.1:8000/``. The home page links to the request
-metadata demonstration and the CSRF demonstration. The metadata page sends
+Open ``http://127.0.0.1:8000/``. The home page links to request metadata,
+CSRF, and a staff-only signal view. The metadata page sends
 Datastar GETs to both sync and async views; inspect the browser Network panel
 for ``Datastar-Request: true``. Both responses are ordinary ``text/html``
 morphs matched by stable element IDs, not SSE responses.
@@ -39,8 +41,14 @@ request. Keep ``DatastarMiddleware`` before ``CsrfViewMiddleware`` and render
 ``{% datastar_csrf %}`` before the Datastar module: the template tag installs
 the packaged fetch bridge before Datastar sends requests.
 
-The example pins Datastar to version 1.0.3:
-``https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.3/bundles/datastar.js``.
+Sign in with the local staff account and select Signal diagnostics. Select the
+icon at the bottom right. Select Add one or Change enabled, then search for
+``count`` or ``enabled``. The panel shows raw browser signals. Keep secrets
+out of these values. Do not use the example secret key on a public server.
+See :doc:`signal-diagnostics` for limits.
+
+The example pins Datastar to version 1.0.4:
+``https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.4/bundles/datastar.js``.
 A pinned CDN URL prevents accidental version drift, but it is still a
 third-party code-execution trust boundary. In production, download, review,
 and serve that bundle from your own static origin while preserving the script
